@@ -1,6 +1,6 @@
 import { View } from "../base/View";
 import { ensureElement } from "../../utils/utils";
-import { IEvents } from "../base/events";
+import { IEvents } from "../base/Events";
 
 interface IModal{
   content: HTMLElement;
@@ -9,13 +9,15 @@ interface IModal{
 export class Modal extends View<IModal> {
   protected _closeButton: HTMLButtonElement;
   protected _content: HTMLElement;
+  protected _handleEscClose: (this: IModal, ev: KeyboardEvent) => void;
 
   constructor(container: HTMLElement, protected events: IEvents) {
     super(container);
 
     this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
     this._content = ensureElement<HTMLElement>('.modal__content', container);
-
+    
+    this._handleEscClose = this.closeByEsc.bind(this);
     this._closeButton.addEventListener('click', this.close.bind(this));
     this.container.addEventListener('click', this.close.bind(this));
     this._content.addEventListener('click', (event) => event.stopPropagation());
@@ -27,16 +29,14 @@ export class Modal extends View<IModal> {
 
   open() {
     this.container.classList.add('modal_active');
-    document.addEventListener('keydown', this.closeByEsc.bind(this));
+    document.addEventListener('keydown', this._handleEscClose);
     this.events.emit('modal:open');
   }
 
   close() {
     this.container.classList.remove('modal_active');
     this.content = null;
-    document.removeEventListener('keydown', this.closeByEsc.bind(this
-
-    ));
+    document.removeEventListener('keydown', this._handleEscClose);
     this.events.emit('modal:close');
   }
 

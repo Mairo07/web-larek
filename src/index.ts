@@ -2,7 +2,7 @@ import './scss/styles.scss';
 
 import { AppApi } from './components/AppApi';
 import { API_URL, CDN_URL } from './utils/constants';
-import { EventEmitter } from './components/base/events';
+import { EventEmitter } from './components/base/Events';
 import { AppState } from './components/AppState';
 import { Page } from './components/Page';
 import { Modal } from './components/common/Modal';
